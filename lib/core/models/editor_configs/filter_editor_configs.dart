@@ -43,6 +43,7 @@ class FilterEditorConfigs implements BaseSubEditorConfigs {
     this.enabled = true,
     this.showLayers = true,
     this.filterList,
+    this.initialFilter,
     this.safeArea = const EditorSafeArea(),
     this.fadeInUpDuration = const Duration(milliseconds: 220),
     this.fadeInUpStaggerDelayDuration = const Duration(milliseconds: 25),
@@ -67,6 +68,13 @@ class FilterEditorConfigs implements BaseSubEditorConfigs {
 
   /// A list of color filter generators to apply to an image.
   final List<FilterModel>? filterList;
+
+  /// The initial filter to select when the editor opens.
+  ///
+  /// If specified, the filter editor will start with this filter already
+  /// selected and applied. This is useful for pre-selecting filters based
+  /// on previous user choices or camera filter selections.
+  final FilterModel? initialFilter;
 
   /// The duration for the fade-in-up animation.
   ///
@@ -105,6 +113,7 @@ class FilterEditorConfigs implements BaseSubEditorConfigs {
     bool? enabled,
     bool? showLayers,
     List<FilterModel>? filterList,
+    FilterModel? initialFilter,
     Duration? fadeInUpDuration,
     Duration? fadeInUpStaggerDelayDuration,
     EditorSafeArea? safeArea,
@@ -118,6 +127,7 @@ class FilterEditorConfigs implements BaseSubEditorConfigs {
       enabled: enabled ?? this.enabled,
       showLayers: showLayers ?? this.showLayers,
       filterList: filterList ?? this.filterList,
+      initialFilter: initialFilter ?? this.initialFilter,
       fadeInUpDuration: fadeInUpDuration ?? this.fadeInUpDuration,
       style: style ?? this.style,
       fadeInUpStaggerDelayDuration:

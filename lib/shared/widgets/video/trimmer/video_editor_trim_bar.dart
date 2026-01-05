@@ -85,19 +85,35 @@ class _VideoEditorTrimBarState extends State<VideoEditorTrimBar> {
   }
 
   void _updateTrimStart(double value) {
-    _trimStart = value.clamp(
-      _trimEnd - _maxTrimPercentage,
-      _trimEnd - _minTrimPercentage,
-    );
+    // Calculate clamp boundaries
+    double minValue = _trimEnd - _maxTrimPercentage;
+    double maxValue = _trimEnd - _minTrimPercentage;
+
+    // Ensure min <= max by swapping if needed
+    if (minValue > maxValue) {
+      final temp = minValue;
+      minValue = maxValue;
+      maxValue = temp;
+    }
+
+    _trimStart = value.clamp(minValue, maxValue);
 
     _updateTrimSpan();
   }
 
   void _updateTrimEnd(double value) {
-    _trimEnd = value.clamp(
-      _trimStart + _minTrimPercentage,
-      _trimStart + _maxTrimPercentage,
-    );
+    // Calculate clamp boundaries
+    double minValue = _trimStart + _minTrimPercentage;
+    double maxValue = _trimStart + _maxTrimPercentage;
+
+    // Ensure min <= max by swapping if needed
+    if (minValue > maxValue) {
+      final temp = minValue;
+      minValue = maxValue;
+      maxValue = temp;
+    }
+
+    _trimEnd = value.clamp(minValue, maxValue);
 
     _updateTrimSpan();
   }

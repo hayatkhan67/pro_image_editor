@@ -189,8 +189,19 @@ class FilterEditorState extends State<FilterEditor>
     _uiFilterStream = StreamController.broadcast();
     _uiFilterStream.stream.listen((_) => rebuildController.add(null));
 
+    // Apply initial filter only if no filters have been applied yet
+    // This ensures preselected filters work but user changes persist
+    if (filterEditorConfigs.initialFilter != null && appliedFilters.isEmpty) {
+      _selectedFilter = filterEditorConfigs.initialFilter!;
+      _filterOpacity = 1.0;
+    }
+
     filterEditorCallbacks?.onInit?.call();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      // Trigger UI update to show initial filter on video
+      if (filterEditorConfigs.initialFilter != null && appliedFilters.isEmpty) {
+        _uiFilterStream.add(null);
+      }
       filterEditorCallbacks?.onAfterViewInit?.call();
     });
   }

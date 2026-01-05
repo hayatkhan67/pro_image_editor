@@ -114,6 +114,39 @@ class _FilterEditorItemListState extends State<FilterEditorItemList> {
   void initState() {
     super.initState();
     _scrollCtrl = ScrollController();
+
+    // Schedule scroll to selected filter after first build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToSelectedFilter();
+    });
+  }
+
+  /// Scrolls to the selected filter to make it visible.
+  void _scrollToSelectedFilter() {
+    if (!widget.selectedFilter.isEmpty && _scrollCtrl.hasClients) {
+      // Find index of selected filter
+      int selectedIndex = _filters.indexWhere(
+        (f) => f.filters.hashCode == widget.selectedFilter.hashCode,
+      );
+
+      if (selectedIndex > 0) {
+        // Calculate scroll position
+        double itemWidth = widget.previewImageSize.width +
+            _filterConfigs.style.filterListSpacing;
+        double scrollPosition = itemWidth * selectedIndex;
+
+        // Center the selected item if possible
+        double screenWidth = MediaQuery.sizeOf(context).width;
+        scrollPosition = (scrollPosition - (screenWidth - itemWidth) / 2)
+            .clamp(0.0, _scrollCtrl.position.maxScrollExtent);
+
+        _scrollCtrl.animateTo(
+          scrollPosition,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    }
   }
 
   @override
@@ -207,8 +240,11 @@ class _FilterEditorItemListState extends State<FilterEditorItemList> {
               decoration: BoxDecoration(
                 borderRadius: widget.borderRadius ?? BorderRadius.circular(4),
                 border: Border.all(
-                  color: const Color(0xFF242424),
-                  width: 1,
+                  color: isSelected
+                      ? widget
+                          .configs.filterEditor.style.previewSelectedTextColor
+                      : const Color(0xFF242424),
+                  width: isSelected ? 3 : 1,
                 ),
               ),
             ),
